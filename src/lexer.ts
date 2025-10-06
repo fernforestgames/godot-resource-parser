@@ -3,8 +3,8 @@
  * Tokenizes .tscn and .tres file content
  */
 
-import { Token, TokenType } from './types'
-import { LexerError } from './errors'
+import { Token, TokenType } from './types.js'
+import { LexerError } from './errors.js'
 
 export class Lexer {
   private source: string

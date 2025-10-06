@@ -4,7 +4,7 @@
  */
 
 // Export main parsing functions
-export { parse, parseScene, parseResource } from './parser'
+export { parse, parseScene, parseResource } from './parser.js'
 
 // Export all types
 export type {
@@ -51,7 +51,7 @@ export type {
   GodotResource,
   GodotScene,
   ParsedGodotFile,
-} from './types'
+} from './types.js'
 
 // Export type guards
 export {
@@ -62,10 +62,10 @@ export {
   isVector2,
   isVector3,
   isColor,
-} from './types'
+} from './types.js'
 
 // Export enums
-export { TokenType } from './types'
+export { TokenType } from './types.js'
 
 // Export error classes for advanced usage
 export {
@@ -76,4 +76,4 @@ export {
   UnexpectedEOFError,
   UnexpectedTokenError,
   UnsupportedFormatError,
-} from './errors'
+} from './errors.js'

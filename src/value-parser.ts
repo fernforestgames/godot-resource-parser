@@ -2,9 +2,9 @@
  * Value parser for Godot-specific types and values
  */
 
-import { Lexer } from './lexer'
-import { TokenType, GodotValue, Vector2, Vector3, Vector4, Color, Rect2, Transform2D, ExtResourceRef, SubResourceRef, Vector2i, Vector3i, Vector4i, Rect2i } from './types'
-import { SyntaxError, UnexpectedTokenError } from './errors'
+import { Lexer } from './lexer.js'
+import { TokenType, GodotValue, Vector2, Vector3, Vector4, Color, Rect2, Transform2D, ExtResourceRef, SubResourceRef, Vector2i, Vector3i, Vector4i, Rect2i } from './types.js'
+import { SyntaxError, UnexpectedTokenError } from './errors.js'
 
 export class ValueParser {
   constructor(private lexer: Lexer) {}

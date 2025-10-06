@@ -2,8 +2,8 @@
  * Main parser for Godot resource files (.tscn and .tres)
  */
 
-import { Lexer } from './lexer'
-import { ValueParser } from './value-parser'
+import { Lexer } from './lexer.js'
+import { ValueParser } from './value-parser.js'
 import {
   TokenType,
   GodotScene,
@@ -19,8 +19,8 @@ import {
   ResourceSection,
   GodotValue,
   ParsedGodotFile,
-} from './types'
-import { SyntaxError as ParseSyntaxError, UnexpectedTokenError, UnsupportedFormatError } from './errors'
+} from './types.js'
+import { SyntaxError as ParseSyntaxError, UnexpectedTokenError, UnsupportedFormatError } from './errors.js'
 
 export class Parser {
   private lexer: Lexer

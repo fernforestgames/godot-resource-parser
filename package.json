@@ -1,0 +1,39 @@
+{
+  "name": "@fernforestgames/godot-resource-parser",
+  "version": "0.1.0",
+  "description": "NodeJS library to parse Godot 4 tscn and tres files",
+  "author": "Justin Spahr-Summers <justin@fernforestgames.com> (https://fernforestgames.com)",
+  "license": "MIT",
+  "homepage": "https://github.com/fernforestgames/godot-resource-parser",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fernforestgames/godot-resource-parser.git"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "typescript",
+    "godot"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/node": "^24.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "eslint": "^9.36.0",
+    "globals": "^16.4.0",
+    "typescript": "^5.9.2"
+  }
+}

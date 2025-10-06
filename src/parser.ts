@@ -2,25 +2,26 @@
  * Main parser for Godot resource files (.tscn and .tres)
  */
 
+import { SyntaxError as ParseSyntaxError, UnexpectedTokenError, UnsupportedFormatError } from './errors.js'
 import { Lexer } from './lexer.js'
-import { ValueParser } from './value-parser.js'
 import {
-  TokenType,
-  GodotScene,
-  GodotResource,
-  FileHeader,
-  GdSceneHeader,
-  GdResourceHeader,
-  ExtResource,
-  SubResource,
-  Node,
   Connection,
   Editable,
-  ResourceSection,
+  ExtResource,
+  ExtResourceRef,
+  FileHeader,
+  GdResourceHeader,
+  GdSceneHeader,
+  GodotResource,
+  GodotScene,
   GodotValue,
+  Node,
   ParsedGodotFile,
+  ResourceSection,
+  SubResource,
+  TokenType,
 } from './types.js'
-import { SyntaxError as ParseSyntaxError, UnexpectedTokenError, UnsupportedFormatError } from './errors.js'
+import { ValueParser } from './value-parser.js'
 
 export class Parser {
   private lexer: Lexer
@@ -312,7 +313,7 @@ export class Parser {
       node.parent = attrs['parent'] as string
     }
     if (attrs['instance'] !== undefined) {
-      node.instance = attrs['instance'] as any
+      node.instance = attrs['instance'] as ExtResourceRef
     }
     if (attrs['instance_placeholder'] !== undefined) {
       node.instancePlaceholder = attrs['instance_placeholder'] as string

@@ -190,6 +190,13 @@ export interface SubResourceRef {
   id: string | number
 }
 
+// Typed array (Godot 4 format: Array[Type](...))
+export interface TypedArray {
+  type: 'array'
+  elementType: string | GodotValue
+  values: GodotValue[]
+}
+
 // Union type for all possible parsed values
 export type GodotValue =
   | string
@@ -222,6 +229,7 @@ export type GodotValue =
   | PackedColorArray
   | ExtResourceRef
   | SubResourceRef
+  | TypedArray
   | GodotValue[]
   | { [key: string]: GodotValue }
 

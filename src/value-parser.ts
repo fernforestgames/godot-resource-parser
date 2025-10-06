@@ -43,6 +43,12 @@ export class ValueParser {
 
         // Godot type constructors
         this.lexer.next()
+
+        // Check for typed arrays: Array[Type](values)
+        if (identifier === 'Array' && this.lexer.peek().type === TokenType.SYMBOL && this.lexer.peek().value === '[') {
+          return this.parseTypedArray()
+        }
+
         return this.parseGodotType(identifier)
       }
 
@@ -494,6 +500,54 @@ export class ValueParser {
   }
 
   /**
+   * Parse typed array: Array[Type](values)
+   * Godot 4 typed arrays like Array[StringName]([...]) or Array[ExtResource("id")]([...])
+   */
+  parseTypedArray(): { type: 'array', elementType: string | GodotValue, values: GodotValue[] } {
+    // Expect opening bracket for type
+    this.lexer.expect(TokenType.SYMBOL, '[')
+
+    // Parse element type - can be either a simple identifier or a complex value
+    let elementType: string | GodotValue
+    const typeToken = this.lexer.peek()
+
+    if (typeToken.type === TokenType.IDENTIFIER) {
+      this.lexer.next()
+      const typeName = typeToken.value as string
+
+      // Check if next token is '(' (complex type like ExtResource)
+      if (this.lexer.peek().type === TokenType.SYMBOL && this.lexer.peek().value === '(') {
+        // Parse as Godot type (e.g., ExtResource("id"))
+        elementType = this.parseGodotType(typeName)
+      } else {
+        // Simple type like StringName
+        elementType = typeName
+      }
+    } else {
+      // Other types - parse as value
+      elementType = this.parseValue()
+    }
+
+    // Expect closing bracket
+    this.lexer.expect(TokenType.SYMBOL, ']')
+
+    // Expect opening parenthesis for values
+    this.lexer.expect(TokenType.SYMBOL, '(')
+
+    // Parse the array values using parseArray
+    const values = this.parseArray()
+
+    // Expect closing parenthesis
+    this.lexer.expect(TokenType.SYMBOL, ')')
+
+    return {
+      type: 'array',
+      elementType,
+      values
+    }
+  }
+
+  /**
    * Parse dictionary: { "key": value, ... }
    */
   parseDict(): Record<string, GodotValue> {
@@ -514,18 +568,37 @@ export class ValueParser {
         this.lexer.next()
       }
 
-      // Parse key (must be a string)
-      const keyToken = this.lexer.next()
-      if (keyToken.type !== TokenType.STRING) {
+      // Parse key (can be a string, ExtResource, or SubResource)
+      const keyToken = this.lexer.peek()
+      let key: string
+
+      if (keyToken.type === TokenType.STRING) {
+        // String key
+        this.lexer.next()
+        key = keyToken.value as string
+      } else if (keyToken.type === TokenType.IDENTIFIER) {
+        // ExtResource or SubResource key
+        const keyValue = this.parseValue()
+        // Convert the value to a string representation for the key
+        if (typeof keyValue === 'object' && keyValue !== null && 'type' in keyValue) {
+          if (keyValue.type === 'ExtResource' || keyValue.type === 'SubResource') {
+            key = `${keyValue.type}("${keyValue.id}")`
+          } else {
+            // For other types, use JSON representation
+            key = JSON.stringify(keyValue)
+          }
+        } else {
+          key = String(keyValue)
+        }
+      } else {
         throw UnexpectedTokenError.create(
           String(keyToken.value),
-          'string key',
+          'string key or resource reference',
           keyToken.line,
           keyToken.column,
           this.lexer['source']
         )
       }
-      const key = keyToken.value as string
 
       // Expect colon
       this.lexer.expect(TokenType.SYMBOL, ':')

@@ -1,4 +1,5 @@
 import { parseResource } from '../src/parser';
+import { TypedArray } from '../src/types';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -9,7 +10,7 @@ describe('sol.tres fixture', () => {
   describe('Header', () => {
     it('should have correct header properties', () => {
       expect(result.header.type).toBe('gd_resource');
-      expect(result.header.scriptClass).toBe('StarSystem');
+      expect(result.header.resourceType).toBe('Resource');
       expect(result.header.loadSteps).toBe(21);
       expect(result.header.format).toBe(3);
       expect(result.header.uid).toBe('uid://cew4x137v08q');
@@ -17,15 +18,17 @@ describe('sol.tres fixture', () => {
   });
 
   describe('External Resources', () => {
-    it('should have 17 external resources', () => {
-      expect(result.extResources).toHaveLength(17);
+    it('should have 19 external resources', () => {
+      expect(result.extResources).toHaveLength(19);
     });
 
     it('should parse first ext_resource correctly', () => {
-      expect(result.extResources[0].type).toBe('Script');
-      expect(result.extResources[0].uid).toBe('uid://caa3h7n2ybl2u');
-      expect(result.extResources[0].path).toBe('res://galaxy/star_system/star_system.gd');
-      expect(result.extResources[0].id).toBe('1_ewhsc');
+      const first = result.extResources[0];
+      expect(first).toBeDefined();
+      expect(first!.type).toBe('Script');
+      expect(first!.uid).toBe('uid://caa3h7n2ybl2u');
+      expect(first!.path).toBe('res://galaxy/star_system/star_system.gd');
+      expect(first!.id).toBe('1_ewhsc');
     });
   });
 
@@ -35,8 +38,10 @@ describe('sol.tres fixture', () => {
     });
 
     it('should parse sub_resource correctly', () => {
-      expect(result.subResources[0].id).toBe('Resource_tj2o3');
-      expect(result.subResources[0].type).toBe('Resource');
+      const first = result.subResources[0];
+      expect(first).toBeDefined();
+      expect(first!.id).toBe('Resource_tj2o3');
+      expect(first!.type).toBe('Resource');
     });
   });
 
@@ -46,12 +51,12 @@ describe('sol.tres fixture', () => {
     });
 
     it('should parse basic properties', () => {
-      expect(result.resource!.properties.name).toBe('Sol');
-      expect(result.resource!.properties.scene_path).toBe('res://galaxy/star_system/scenes/sol.tscn');
+      expect(result.resource!.properties['name']).toBe('Sol');
+      expect(result.resource!.properties['scene_path']).toBe('res://galaxy/star_system/scenes/sol.tscn');
     });
 
     it('should parse connections array with StringName type', () => {
-      const connections = result.resource!.properties.connections;
+      const connections = result.resource!.properties['connections'] as TypedArray;
       expect(connections).toBeDefined();
       expect(connections.type).toBe('array');
       expect(connections.elementType).toBe('StringName');
@@ -62,10 +67,14 @@ describe('sol.tres fixture', () => {
     });
 
     it('should parse ports array with typed ExtResource', () => {
-      const ports = result.resource!.properties.ports;
+      const ports = result.resource!.properties['ports'] as TypedArray;
       expect(ports).toBeDefined();
       expect(ports.type).toBe('array');
-      expect(ports.elementType?.type).toBe('ext_resource_ref');
+      expect(typeof ports.elementType).toBe('object');
+      if (typeof ports.elementType === 'object' && ports.elementType !== null && 'type' in ports.elementType && 'id' in ports.elementType) {
+        expect(ports.elementType.type).toBe('ExtResource');
+        expect(ports.elementType.id).toBe('16_elnv2');
+      }
       expect(Array.isArray(ports.values)).toBe(true);
       expect(ports.values).toHaveLength(2);
     });

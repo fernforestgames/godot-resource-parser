@@ -95,3 +95,4 @@ When adding tests, prefer using real Godot files from the demo projects to ensur
 Godot file format documentation: https://docs.godotengine.org/en/stable/contributing/development/file_formats/tscn.html
 
 Official implementation: `ResourceFormatLoaderText` class in Godot engine source at `scene/resources/resource_format_text.cpp`
+- Use `npm run build && ./dist/cli.js file_to_test.tres` to test parsing from the CLI

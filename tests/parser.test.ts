@@ -2,6 +2,7 @@
  * Tests for the main parser
  */
 
+import { UnsupportedFormatError } from '../src/errors'
 import { parseResource, parseScene } from '../src/parser'
 
 describe('Parser', () => {
@@ -217,6 +218,53 @@ position = Vector2(0, 0) ; inline comment
 
       expect(scene.nodes).toHaveLength(1)
       expect(scene.nodes[0]!.name).toBe('Root')
+    })
+  })
+
+  describe('Format validation', () => {
+    it('should reject format=2 for scenes', () => {
+      const content = `[gd_scene format=2]
+
+[node name="Root" type="Node2D"]
+`
+      expect(() => parseScene(content)).toThrow(UnsupportedFormatError)
+      expect(() => parseScene(content)).toThrow('Unsupported format version 2')
+    })
+
+    it('should reject format=2 for resources', () => {
+      const content = `[gd_resource type="Shader" format=2]
+
+[resource]
+code = "shader_type canvas_item;"
+`
+      expect(() => parseResource(content)).toThrow(UnsupportedFormatError)
+      expect(() => parseResource(content)).toThrow('Unsupported format version 2')
+    })
+
+    it('should reject format=1 for scenes', () => {
+      const content = `[gd_scene format=1]
+
+[node name="Root" type="Node2D"]
+`
+      expect(() => parseScene(content)).toThrow(UnsupportedFormatError)
+      expect(() => parseScene(content)).toThrow('Unsupported format version 1')
+    })
+
+    it('should accept format=3 for scenes', () => {
+      const content = `[gd_scene format=3]
+
+[node name="Root" type="Node2D"]
+`
+      expect(() => parseScene(content)).not.toThrow()
+    })
+
+    it('should accept format=3 for resources', () => {
+      const content = `[gd_resource type="Shader" format=3]
+
+[resource]
+code = "shader_type canvas_item;"
+`
+      expect(() => parseResource(content)).not.toThrow()
     })
   })
 

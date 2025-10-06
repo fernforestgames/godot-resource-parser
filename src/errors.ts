@@ -188,3 +188,38 @@ export class UnexpectedTokenError extends ParseError {
     return new UnexpectedTokenError(found, expected, line, column, context)
   }
 }
+
+/**
+ * Error for unsupported file format versions
+ */
+export class UnsupportedFormatError extends ParseError {
+  public readonly format: number
+  public readonly supportedFormats: number[]
+
+  constructor(
+    format: number,
+    supportedFormats: number[],
+    line: number,
+    column: number,
+    context?: string
+  ) {
+    const message = `Unsupported format version ${format}, only format ${supportedFormats.join(', ')} is supported`
+
+    super(message, line, column, context)
+    this.name = 'UnsupportedFormatError'
+    this.format = format
+    this.supportedFormats = supportedFormats
+  }
+
+  static create(
+    format: number,
+    supportedFormats: number[],
+    line: number,
+    column: number,
+    source: string,
+    contextLines: number = 2
+  ): UnsupportedFormatError {
+    const context = ParseError['extractContext'](source, line, column, contextLines)
+    return new UnsupportedFormatError(format, supportedFormats, line, column, context)
+  }
+}

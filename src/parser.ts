@@ -20,7 +20,7 @@ import {
   GodotValue,
   ParsedGodotFile,
 } from './types'
-import { SyntaxError as ParseSyntaxError, UnexpectedTokenError } from './errors'
+import { SyntaxError as ParseSyntaxError, UnexpectedTokenError, UnsupportedFormatError } from './errors'
 
 export class Parser {
   private lexer: Lexer
@@ -58,9 +58,20 @@ export class Parser {
       this.lexer.expect(TokenType.SYMBOL, ']')
       this.skipNewlines()
 
+      const format = attrs['format'] as number
+      if (format !== 3) {
+        throw UnsupportedFormatError.create(
+          format,
+          [3],
+          nameToken.line,
+          nameToken.column,
+          this.lexer['source']
+        )
+      }
+
       const header: GdSceneHeader = {
         type: 'gd_scene',
-        format: attrs['format'] as number,
+        format,
       }
       if (attrs['load_steps'] !== undefined) {
         header.loadSteps = attrs['load_steps'] as number
@@ -74,10 +85,21 @@ export class Parser {
       this.lexer.expect(TokenType.SYMBOL, ']')
       this.skipNewlines()
 
+      const format = attrs['format'] as number
+      if (format !== 3) {
+        throw UnsupportedFormatError.create(
+          format,
+          [3],
+          nameToken.line,
+          nameToken.column,
+          this.lexer['source']
+        )
+      }
+
       const header: GdResourceHeader = {
         type: 'gd_resource',
         resourceType: attrs['type'] as string,
-        format: attrs['format'] as number,
+        format,
       }
       if (attrs['load_steps'] !== undefined) {
         header.loadSteps = attrs['load_steps'] as number

@@ -75,4 +75,5 @@ export {
   ReferenceError,
   UnexpectedEOFError,
   UnexpectedTokenError,
+  UnsupportedFormatError,
 } from './errors'

@@ -108,6 +108,9 @@ export class Parser {
       if (attrs['uid'] !== undefined) {
         header.uid = attrs['uid'] as string
       }
+      if (attrs['script_class'] !== undefined) {
+        header.scriptClass = attrs['script_class'] as string
+      }
       return header
     } else {
       throw ParseSyntaxError.withContext(

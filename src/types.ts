@@ -248,7 +248,7 @@ export interface GdSceneHeader {
 }
 
 /**
- * File header for resources: [gd_resource type="X" load_steps=Y format=Z uid="..."]
+ * File header for resources: [gd_resource type="X" load_steps=Y format=Z uid="..." script_class="..."]
  */
 export interface GdResourceHeader {
   type: 'gd_resource'
@@ -256,6 +256,7 @@ export interface GdResourceHeader {
   loadSteps?: number
   format: number
   uid?: string
+  scriptClass?: string
 }
 
 export type FileHeader = GdSceneHeader | GdResourceHeader

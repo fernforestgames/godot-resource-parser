@@ -1,6 +1,6 @@
 {
   "name": "@fernforestgames/godot-resource-parser",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Parser for Godot 4 .tscn and .tres files",
   "author": "Justin Spahr-Summers <justin@fernforestgames.com> (https://fernforestgames.com)",
   "license": "MIT",
